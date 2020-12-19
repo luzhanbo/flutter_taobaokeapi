@@ -10,7 +10,7 @@ void testOneMonth() async{
   final st = DateTime.now();
   var timeSpan = await client.getTimeSpan();
   var startTime = DateTime.now();
-  var endTime = DateTime(2020,12,14);// lastMonthFirstDay();   //
+  var endTime = lastMonthFirstDay();
 
   final orderStream = client.syncOrders(startTime: startTime, endTime: endTime,
       timeSpan: timeSpan,threads: 2,
@@ -39,9 +39,7 @@ void testOneMonth() async{
 
 void testSearch() async {
   var client = getClient();
-
-  var ret = await client.search(q: '593142351635',pageSize: 1);
-
+  var ret = await client.search(q: '苹果');
 }
 
 void testDetail() async {

@@ -1,22 +1,49 @@
-A library for Dart developers.
+淘宝客API的dart SDK.
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
-
-## Usage
-
-A simple usage example:
+## 使用方法
 
 ```dart
 import 'package:taobaokeapi/taobaokeapi.dart';
 
 main() {
-  var awesome = new Awesome();
+  //usertoken 在https://taobaokeapi.com/获取
+  var client = TaobaokeAPI(userToken: usertoken,defaultAdzoneId: adzoneId,defaultSiteId: siteId);
+  //搜索 
+  var ret = await client.search(q: '苹果');
 }
 ```
 
-## Features and bugs
+```dart
+//订单同步
+void testOneMonth() async{
+  var client = getClient();
+  final st = DateTime.now();
+  var timeSpan = await client.getTimeSpan();
+  var startTime = DateTime.now();
+  var endTime = lastMonthFirstDay();
 
-Please file feature requests and bugs at the [issue tracker][tracker].
+  final orderStream = client.syncOrders(startTime: startTime, endTime: endTime,
+      timeSpan: timeSpan,threads: 2,
+      onFinish: (SyncProgress progress){
+        print(progress.duration);
+        print('Finish>>>>>>>>');
+      },
+      onProgress: (SyncProgress progress){
+        print('finish ${(progress.finishRate*100).toStringAsFixed(2)}');
+      }
+  );
+  var index = 0;
+  orderStream.listen((order) {
+    index++;
+    if(index==1){
+      print(order);
+    }
 
-[tracker]: http://example.com/issues/replaceme
+  }).onDone(() {
+    final et = DateTime.now();
+    print('lastTime:${et.difference(st)}');
+  });
+}
+
+```
+
